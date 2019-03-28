@@ -1,45 +1,25 @@
 require('./config/config');
-
 const express = require('express');
-const app = express();
-
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+// ================================================
+
+const app = express();
+
+// ================================================
+
+// Parse application/x-www-form-urlencoded.
+app.use(bodyParser.urlencoded({ extended: false }));
  
-// parse application/json
-app.use(bodyParser.json())
+// Parse application/json.
+app.use(bodyParser.json());
 
-app.get('/user', (req, res) => res.json('Get User'));
+app.use(require('./routes/user'));
 
-app.post('/user', (req, res) => {
-    
-    let body = req.body;
-    if( body.name === undefined){
-
-        res.status(400).json({
-            ok: false,
-            message: 'Name required.'
-        });
-
-    } else {
-
-        res.json({
-            person: body
-        });
-    }
+mongoose.connect('mongodb://localhost:27017/pennywise', {useNewUrlParser: true}, (err, res) => {
+    if(err) throw err;
+    console.log('Database ONLINE');
 });
-
-app.put('/user/:id', (req, res) => {
-    
-    let id = req.params.id;
-    
-    res.json({
-        id
-    });
-});
-
-app.delete('/user', (req, res) => res.json('Delete User'));
 
 app.listen(process.env.PORT, () => console.log(`Example app listening on port ${ process.env.PORT }!`));
