@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const _ = require('underscore');
 const User = require('../models/user');
+const { authenticateToken, verifyAdmin_Role } = require('../middlewares/authentication');
 
 // ================================================
 
@@ -9,8 +10,8 @@ const app = express();
 
 // =================================================
 
-app.get('/user', (req, res) => {
-    
+app.get('/user', authenticateToken, (req, res) => {
+
     let from = Number(req.query.from) || 0;
     let limit = Number(req.query.limit) || 5;
 
@@ -23,7 +24,7 @@ app.get('/user', (req, res) => {
                 return res.status(400).json({
                     ok: false,
                     err
-                })
+                });
             }
 
             User.count({ status: true }, (err, count) => {
@@ -36,10 +37,10 @@ app.get('/user', (req, res) => {
     
             
         })
-    
+
 });
 
-app.post('/user', (req, res) => {
+app.post('/user', [authenticateToken, verifyAdmin_Role], (req, res) => {
     
     let body = req.body;
     let user = new User({
@@ -55,7 +56,7 @@ app.post('/user', (req, res) => {
             return res.status(400).json({
                 ok: false,
                 err
-            })
+            });
         }
 
         res.json({
@@ -67,18 +68,18 @@ app.post('/user', (req, res) => {
 
 });
 
-app.put('/user/:id', (req, res) => {
+app.put('/user/:id', [authenticateToken, verifyAdmin_Role], (req, res) => {
     
     let id = req.params.id;
     let body = _.pick(req.body, ['name', 'email', 'img', 'role', 'status']);
 
-    User.findByIdAndUpdate(id, body, { new : true, runValidators : true}, (err, userDB) => {
+    User.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, userDB) => {
 
         if(err) {
             return res.status(400).json({
                 ok: false,
                 err
-            })
+            });
         }
 
         res.json({
@@ -90,7 +91,7 @@ app.put('/user/:id', (req, res) => {
 
 });
 
-app.delete('/user/:id', (req, res) => {
+app.delete('/user/:id', [authenticateToken, verifyAdmin_Role], (req, res) => {
 
     let id = req.params.id;
     let changeStatus = {
@@ -102,11 +103,11 @@ app.delete('/user/:id', (req, res) => {
     User.findByIdAndUpdate(id, changeStatus, { new: true }, (err, deletedUser) => {
 
         if(err) {
-        return res.status(400).json({
-            ok: false,
-            err
-        })
-    }
+            return res.status(400).json({
+                ok: false,
+                err
+            });
+        }
 
         if(!deletedUser) {
             return res.status(400).json({
@@ -114,7 +115,7 @@ app.delete('/user/:id', (req, res) => {
                 err: {
                     message: 'User not found.'
                 }
-            })
+            });
         }
 
        res.json({
@@ -122,8 +123,7 @@ app.delete('/user/:id', (req, res) => {
             user: deletedUser
         });
             
-
-    })
+    });
 
 });
 
