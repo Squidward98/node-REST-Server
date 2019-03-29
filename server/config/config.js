@@ -19,7 +19,7 @@ let urlDB;
 if(process.env.NODE_ENV === 'dev') {
     urlDB = 'mongodb://localhost:27017/pennywise';
 } else {
-    urlDB = 'mmongodb+srv://pennywise:l1Hrm4ACqUoB8J2A@cluster0-qx7i8.mongodb.net/pennywise';
+    urlDB = process.env.MONGO_URI;
 }
 
 process.env.URLDB = urlDB;
