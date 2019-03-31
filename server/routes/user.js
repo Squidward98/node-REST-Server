@@ -34,8 +34,7 @@ app.get('/user', authenticateToken, (req, res) => {
                     count
                 });
             });
-    
-            
+     
         })
 
 });
