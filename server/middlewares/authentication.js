@@ -31,9 +31,9 @@ let authenticateToken = (req, res, next) => {
 
 let verifyAdmin_Role = (req, res, next) => {
 
-    let user = req.body;
+    let user = req.user;
 
-    if(user.user === 'ADMIN_ROLE'){
+    if(user.role === 'ADMIN_ROLE'){
         next();
     } else {
         return res.json({
