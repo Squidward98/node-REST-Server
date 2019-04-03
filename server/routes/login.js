@@ -1,14 +1,12 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken'); 
-
 const {OAuth2Client} = require('google-auth-library');
-const client = new OAuth2Client(process.env.CLIENT_ID);
-
 const User = require('../models/user');
 
 // ================================================
 
+const client = new OAuth2Client(process.env.CLIENT_ID);
 const app = express();
 
 // =================================================
