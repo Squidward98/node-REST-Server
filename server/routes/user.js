@@ -8,7 +8,7 @@ const { authenticateToken, verifyAdmin_Role } = require('../middlewares/authenti
 
 const app = express();
 
-// =================================================
+// ================================================
 
 app.get('/user', authenticateToken, (req, res) => {
 
